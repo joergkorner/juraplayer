@@ -4,7 +4,8 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <style>
  body{font:15px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
-      color:#23252b;background:#fbfaf8;margin:0;padding:44px 24px 80px}
+      color:#23252b;background:#fbfaf8;margin:0;padding:44px 24px 80px;
+      -webkit-text-size-adjust:100%}
  main{max-width:620px;margin:0 auto}
  h1{font-size:24px;margin:0 0 4px;font-weight:600}
  .warn{color:#c8452a;margin:0 0 22px}
@@ -18,11 +19,23 @@
  details b{color:#33363d;font-weight:600}
  ul{list-style:none;padding:0;margin:0;border-top:1px solid #e4e0d8}
  li{border-bottom:1px solid #e4e0d8}
- a{display:flex;justify-content:space-between;gap:16px;
-   padding:13px 4px;text-decoration:none;color:#23252b}
+ a{display:flex;justify-content:space-between;align-items:baseline;gap:14px;
+   min-height:46px;padding:12px 4px;text-decoration:none;color:#23252b}
  a:hover{background:#f3f0ea}
- .datum{color:#8c9099;white-space:nowrap}
+ a:active{background:#ece7de}
+ .datum{color:#8c9099;white-space:nowrap;font-size:14px}
  footer{margin-top:32px;color:#8c9099;font-size:13px}
+
+ @media (max-width:520px){
+   body{padding:28px 16px 56px}
+   h1{font-size:21px}
+   .warn{margin-bottom:18px}
+   details{margin-bottom:22px}
+   details p{line-height:1.7;padding-left:11px}
+   a{flex-direction:column;gap:2px;align-items:flex-start;
+     min-height:0;padding:11px 4px;line-height:1.35}
+   .datum{font-size:13px}
+ }
 </style>
 <main>
 <h1>Jura-Player</h1>
