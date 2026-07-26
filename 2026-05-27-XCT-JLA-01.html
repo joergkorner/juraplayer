@@ -1,9 +1,20 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Jura-Player</title>
 <style>
  body{font:13.5px/1.4 -apple-system,BlinkMacSystemFont,"Helvetica Neue",sans-serif;
-      margin:0;padding:14px 18px 24px;background:#faf9f7;color:#23252b}
+      margin:0;padding:14px 18px 24px;background:#faf9f7;color:#23252b;
+      -webkit-text-size-adjust:100%}
+ @media (max-width:640px){
+   body{padding:10px 10px 20px}
+   h1{font-size:16px}
+   .kopfzeile{font-size:12px}
+   .kopfzeile span{margin:0 4px}
+   .bar{gap:8px}
+   .box{padding:6px 6px 5px}
+   button,select{padding:6px 11px}
+ }
  h1{font-size:18px;margin:0 0 3px;font-weight:600}
  .kopfzeile{font-size:13px;color:#565a63;margin:0 0 11px}
  .kopfzeile b{color:#23252b;font-weight:600}
@@ -12,14 +23,14 @@
  .bar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:10px}
  .bar label{font-size:12.5px;color:#565a63;white-space:nowrap}
  input[type=range]{accent-color:#3d5a99}
- #zeit{width:320px}
+ #zeit{flex:1 1 200px;min-width:140px;max-width:420px}
  #karte{cursor:ew-resize}
  #folge.aktiv{background:#eef2fa;border-color:#8ea4cc;color:#2f4a86}
  button,select{font:inherit;padding:4px 13px;border:1px solid #c3c0ba;
    background:#fff;border-radius:6px;cursor:pointer}
  .uhr{font-variant-numeric:tabular-nums;font-weight:600;font-size:16px}
  .kenn{color:#6b6f78;font-size:12px;font-variant-numeric:tabular-nums}
- canvas{display:block;width:100%;height:auto;border-radius:7px}
+ canvas{display:block;width:100%;border-radius:7px;touch-action:none}
  .box{background:#fff;border:1px solid #e3e1dd;border-radius:8px;
       padding:8px 10px 6px;margin-bottom:10px}
  .tit{font-size:12.5px;color:#565a63;margin-bottom:5px}
@@ -204,9 +215,28 @@ function wolkeAtK(k, i, j){
   return vA*(1-f) + vB*f;
 }
 
+function passeAlleAn(){
+  passeAn(kc, 240, 1.55, 3.35);    // Karte
+  passeAn(sc, 260, 1.40, 4.05);    // Querschnitt
+}
+
+function passeAn(cv, teiler, minV, maxV){
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  const w = Math.max(cv.clientWidth || cv.parentNode.clientWidth || 320, 260);
+  const v = Math.max(minV, Math.min(maxV, w / teiler));      // Seitenverhaeltnis
+  const hh = Math.round(w / v);
+  cv.style.height = hh + "px";
+  cv.width = Math.round(w * dpr);
+  cv.height = Math.round(hh * dpr);
+  cv._w = w; cv._h = hh; cv._dpr = dpr;
+}
+
 function malKarte(){
-  const c = kc.getContext("2d"), Wd = kc.width, Hd = kc.height;
-  const ML = 40, MB = 22, MT = 6, MR = 6;
+  const c = kc.getContext("2d");
+  c.setTransform(kc._dpr, 0, 0, kc._dpr, 0, 0);
+  const Wd = kc._w, Hd = kc._h;
+  const eng = Wd < 560;
+  const ML = eng ? 28 : 40, MB = eng ? 28 : 32, MT = 6, MR = 6;
   const px = (Wd - ML - MR) / M.ns, py = (Hd - MT - MB) / M.nq;
   c.fillStyle = "#fff"; c.fillRect(0,0,Wd,Hd);
   const off = M.frame[k] * M.ns * M.nq;
@@ -235,12 +265,21 @@ function malKarte(){
     c.stroke();
   });
   // Ortschaften
+  // Ortsnamen: Punkte immer, Beschriftung nur wo Platz ist
+  c.font = (eng ? "600 10px " : "600 11px ") + "-apple-system,sans-serif";
+  const belegt = [];
   M.orte.forEach(o => {
     const X = ML + ((o[1]-M.s0)/M.ds)*px, Y = MT + (M.nq-1-(o[2]-M.q0)/M.dq)*py;
-    c.beginPath(); c.arc(X, Y, 2.6, 0, 6.284);
+    c.beginPath(); c.arc(X, Y, eng ? 2.2 : 2.6, 0, 6.284);
     c.fillStyle = "#2b2d33"; c.fill();
     c.strokeStyle = "#fff"; c.lineWidth = 1.2; c.stroke();
-    c.font = "600 11px -apple-system,sans-serif"; c.textAlign = "left";
+    const br = c.measureText(o[0]).width;
+    const kasten = [X+4, Y-7, X+6+br, Y+7];
+    const stoert = belegt.some(b => !(kasten[2] < b[0] || kasten[0] > b[2] ||
+                                      kasten[3] < b[1] || kasten[1] > b[3]));
+    if(stoert || kasten[2] > Wd - MR) return;
+    belegt.push(kasten);
+    c.textAlign = "left";
     c.lineWidth = 2.6; c.strokeStyle = "rgba(255,255,255,.85)";
     c.strokeText(o[0], X+5, Y+3.5);
     c.fillStyle = "#2b2d33"; c.fillText(o[0], X+5, Y+3.5);
@@ -253,9 +292,12 @@ function malKarte(){
     c.fillText((q>0?"+":"")+q, ML-5, MT + (M.nq-1-j)*py + 4);
   }
   c.textAlign = "center";
-  for(let s = 0; s <= 160; s += 20)
-    c.fillText(s, ML + s*px, Hd - 7);
-  c.fillText("entlang des Bogens [km], links Südwest", ML + (Wd-ML-MR)/2, Hd - 7 + 0);
+  c.font = (eng ? "10px " : "11px ") + "-apple-system,sans-serif";
+  for(let s = 0; s <= 160; s += (eng ? 40 : 20))
+    c.fillText(s, ML + s*px, Hd - MB + 10);
+  c.fillStyle = "#9aa0a8";
+  c.fillText("entlang des Bogens [km], links Südwest",
+             ML + (Wd-ML-MR)/2, Hd - 3);
   // Spur
   c.strokeStyle = "rgba(40,44,52,.42)"; c.lineWidth = 1.4;
   c.beginPath(); let auf = false;
@@ -287,8 +329,11 @@ function malKarte(){
 // ---------- Querschnitt
 const sc = document.getElementById("schnitt");
 function malSchnitt(){
-  const c = sc.getContext("2d"), Wd = sc.width, Hd = sc.height;
-  const ML = 48, MR = 10, MT = 10, MB = 26;
+  const c = sc.getContext("2d");
+  c.setTransform(sc._dpr, 0, 0, sc._dpr, 0, 0);
+  const Wd = sc._w, Hd = sc._h;
+  const eng = Wd < 560;
+  const ML = eng ? 34 : 48, MR = 10, MT = 10, MB = eng ? 30 : 36;
   const q0 = M.qpro0, dq = M.dqpro, n = M.nqpro;
   const X = q => ML + (q - q0)/( (n-1)*dq ) * (Wd-ML-MR);
   const Yv = z => MT + (1 - z/ZMAX) * (Hd-MT-MB);
@@ -579,13 +624,19 @@ function malSchnitt(){
 
   // Achse
   c.fillStyle = "#6b6f78"; c.textAlign = "center";
-  for(let q = -20; q <= 20; q += 5)
-    c.fillText((q>0?"+":"")+q, X(q), Hd-8);
-  c.textAlign = "left";
-  c.fillText("quer zum Bogen [km] — rechts Nordwest", ML, Hd-8);
+  c.font = (eng ? "10px " : "11px ") + "-apple-system,sans-serif";
+  const schrittQ = eng ? 10 : 5;
+  for(let q = -20; q <= 20; q += schrittQ)
+    c.fillText((q>0?"+":"")+q, X(q), Hd - MB + 11);
+  c.textAlign = "center";
+  c.fillStyle = "#9aa0a8";
+  c.fillText(eng ? "quer zum Bogen [km], rechts Nordwest"
+                 : "quer zum Bogen [km] — rechts Nordwest",
+             ML + (Wd-ML-MR)/2, Hd - 4);
 }
 
 function zeige(){
+  if(!kc._w) passeAlleAn();
   if(folgt){
     const p = M.pilot[k];
     if(p && !p[3]){
@@ -635,7 +686,7 @@ function zeige(){
   function setzeAusX(cx){
     const r = kc.getBoundingClientRect(), f = kc.width / r.width;
     const X = (cx - r.left) * f;
-    const ML = 40, MR = 6, px = (kc.width - ML - MR) / M.ns;
+    const ML = 40, MR = 6, px = (kc._w - ML - MR) / M.ns;
     const km = (X - ML) / px;
     skm = Math.max(0, Math.min((M.npro-1)*M.dspro, km));
   }
@@ -649,6 +700,13 @@ function zeige(){
   kc.addEventListener("pointerup", e => { zieht = false; });
   kc.addEventListener("pointercancel", () => { zieht = false; });
   document.getElementById("folge").onclick = () => { folgt = true; zeige(); };
+  let rsz = null;
+  const neuMessen = () => {
+    clearTimeout(rsz);
+    rsz = setTimeout(() => { passeAlleAn(); zeige(); }, 120);
+  };
+  window.addEventListener("resize", neuMessen);
+  window.addEventListener("orientationchange", neuMessen);
   window.starte = () => {
     if(spiel) clearInterval(spiel);
     spiel = setInterval(() => {
