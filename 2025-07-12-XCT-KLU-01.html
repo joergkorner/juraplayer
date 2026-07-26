@@ -3,42 +3,73 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Jura-Player</title>
 <style>
- body{font:13.5px/1.4 -apple-system,BlinkMacSystemFont,"Helvetica Neue",sans-serif;
-      margin:0;padding:14px 18px 24px;background:#faf9f7;color:#23252b;
+ body{font:16px/1.5 -apple-system,BlinkMacSystemFont,"Helvetica Neue",sans-serif;
+      margin:0;padding:18px 20px 40px;background:#faf9f7;color:#23252b;
       -webkit-text-size-adjust:100%}
- @media (max-width:640px){
-   body{padding:10px 10px 20px}
-   h1{font-size:16px}
-   .kopfzeile{font-size:12px}
-   .kopfzeile span{margin:0 4px}
-   .bar{gap:8px}
-   .box{padding:6px 6px 5px}
-   button,select{padding:6px 11px}
- }
- h1{font-size:18px;margin:0 0 3px;font-weight:600}
- .kopfzeile{font-size:13px;color:#565a63;margin:0 0 11px}
- .kopfzeile b{color:#23252b;font-weight:600}
- .kopfzeile span{color:#8c9099;margin:0 7px}
- h1 span{font-weight:400;color:#6b6f78;font-size:13px}
+ h1{font-size:23px;margin:0 0 3px;font-weight:600;letter-spacing:-.2px}
+ .kopfzeile{font-size:15px;color:#6b6f78;margin:0 0 14px}
+ .kopfzeile b{color:#23252b;font-weight:500}
+ .kopfzeile span{color:#b4b7bd;margin:0 6px}
+
  .bar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:10px}
- .bar label{font-size:12.5px;color:#565a63;white-space:nowrap}
- input[type=range]{accent-color:#3d5a99}
- #zeit{flex:1 1 200px;min-width:140px;max-width:420px}
- #karte{cursor:ew-resize}
+ .bar label{font-size:15px;color:#4a4e57;white-space:nowrap;
+            display:inline-flex;align-items:center;gap:7px}
+ .haupt-bar{gap:14px;margin-bottom:14px}
+ .haupt-bar #zeit{flex:1 1 200px;min-width:120px}
+ input[type=range]{accent-color:#3d5a99;height:30px}
+ input[type=checkbox]{width:19px;height:19px;accent-color:#3d5a99}
+ button,select{font:inherit;font-size:15px;padding:9px 16px;border:1px solid #d2cfc9;
+   background:#fff;border-radius:10px;cursor:pointer;color:#23252b}
+ #play{min-width:56px;font-size:18px;padding:8px 16px}
  #folge.aktiv{background:#eef2fa;border-color:#8ea4cc;color:#2f4a86}
- button,select{font:inherit;padding:4px 13px;border:1px solid #c3c0ba;
-   background:#fff;border-radius:6px;cursor:pointer}
- .uhr{font-variant-numeric:tabular-nums;font-weight:600;font-size:16px}
- .kenn{color:#6b6f78;font-size:12px;font-variant-numeric:tabular-nums}
- canvas{display:block;width:100%;border-radius:7px;touch-action:none}
- .box{background:#fff;border:1px solid #e3e1dd;border-radius:8px;
-      padding:8px 10px 6px;margin-bottom:10px}
- .tit{font-size:12.5px;color:#565a63;margin-bottom:5px}
- .tit b{color:#23252b}
- .leg{font-size:11.5px;color:#6b6f78;display:flex;gap:14px;flex-wrap:wrap;margin-top:4px}
- .leg i{display:inline-block;width:11px;height:11px;border-radius:2px;
-        margin-right:4px;vertical-align:-1px}
- #lade{padding:40px;text-align:center;color:#6b6f78}
+ .uhr{font-variant-numeric:tabular-nums;font-weight:600;font-size:20px;
+      letter-spacing:-.3px}
+ .kenn{color:#8c9099;font-size:14px;font-variant-numeric:tabular-nums;
+       margin-top:4px;line-height:1.5}
+
+ canvas{display:block;width:100%;border-radius:10px;touch-action:none}
+ .box{background:#fff;border:1px solid #e6e3de;border-radius:12px;
+      padding:9px 10px 7px;margin-bottom:12px}
+ .tit{font-size:15px;color:#6b6f78;margin-bottom:6px}
+ .tit b{color:#23252b;font-weight:600}
+
+ details{border-top:1px solid #e6e3de;margin:0}
+ details+details{margin-top:0}
+ summary{cursor:pointer;list-style:none;padding:15px 2px;font-size:16px;
+         color:#4a4e57;user-select:none;display:flex;align-items:center;gap:9px}
+ summary::-webkit-details-marker{display:none}
+ summary::before{content:"›";display:inline-block;font-size:20px;color:#a8abb2;
+                 transition:transform .15s;line-height:1}
+ details[open] summary::before{transform:rotate(90deg)}
+ summary:hover{color:#23252b}
+ .klapp{padding:0 2px 18px}
+
+ .leg{font-size:14px;color:#6b6f78;display:flex;gap:8px 16px;flex-wrap:wrap;
+      margin-bottom:14px}
+ .leg i{display:inline-block;width:13px;height:13px;border-radius:3px;
+        margin-right:6px;vertical-align:-2px}
+ .erkl{font-size:14.5px;line-height:1.65;color:#6b6f78;margin:0 0 11px;
+       max-width:62ch}
+
+ #lade{padding:50px;text-align:center;color:#8c9099;font-size:16px}
+
+ @media (max-width:640px){
+   body{padding:14px 13px 32px;font-size:17px}
+   h1{font-size:25px}
+   .kopfzeile{font-size:16px;margin-bottom:14px}
+   .bar{gap:11px}
+   .bar label{font-size:16px}
+   button,select{font-size:16px;padding:11px 17px;border-radius:11px}
+   #play{min-width:62px;font-size:20px}
+   .uhr{font-size:23px}
+   .tit{font-size:16px}
+   .kenn{font-size:15px}
+   summary{font-size:17px;padding:17px 2px}
+   .leg{font-size:15px}
+   .erkl{font-size:15.5px}
+   input[type=range]{height:34px}
+   input[type=checkbox]{width:22px;height:22px}
+ }
 </style>
 
 <h1 id="titel">Jurabogen</h1>
@@ -47,36 +78,50 @@
 <div id="lade">lade …</div>
 <div id="haupt" style="display:none">
 
-<div class="bar">
+<div class="bar haupt-bar">
   <button id="play">▶</button>
-  <label>Zeit</label><input type="range" id="zeit" min="0" value="0">
   <span class="uhr" id="uhr">–</span>
-  <span class="uhr" id="poskm">–</span>
-  <button id="folge" title="Schnitt wieder an den Piloten heften">↺ dem Piloten folgen</button>
-  <label>Tempo <select id="tempo">
-    <option value="220">sehr ruhig</option>
-    <option value="120" selected>ruhig</option>
-    <option value="60">zügig</option>
-    <option value="25">schnell</option>
-  </select></label>
-  <label><input type="checkbox" id="sonne"> Sonneneinstrahlung</label>
-  <label><input type="checkbox" id="glatt" checked> Wolkeninterpolation</label>
-  <label><input type="checkbox" id="best" checked> nur beständige Auslöser</label>
-  <label>Höhe bis <select id="zsel">
-    <option value="4000">4 km</option><option value="5000" selected>5 km</option>
-    <option value="8000">8 km</option><option value="12000">12 km</option>
-  </select></label>
-  <span class="kenn" id="kenn"></span>
+  <input type="range" id="zeit" min="0" value="0">
 </div>
 
 <div class="box">
-  <div class="tit">Wolken über dem ganzen Bogen · Spur und Position von <b id="pn"></b> · Pilot minütlich, Wolkenbild alle 10 min · den Griff oben am Strich fassen und schieben</div>
   <canvas id="karte" width="1344" height="404"></canvas>
 </div>
 
 <div class="box">
   <div class="tit">Querschnitt bei <b id="tit2">–</b></div>
   <canvas id="schnitt" width="1344" height="330"></canvas>
+</div>
+
+<details id="dmodus">
+<summary>Abspielmodus</summary>
+<div class="klapp">
+  <div class="bar">
+    <span class="uhr" id="poskm">–</span>
+    <button id="folge" title="Schnitt wieder an den Piloten heften">↺ dem Piloten folgen</button>
+    <label>Tempo <select id="tempo">
+      <option value="220">sehr ruhig</option>
+      <option value="120" selected>ruhig</option>
+      <option value="60">zügig</option>
+      <option value="25">schnell</option>
+    </select></label>
+    <label>Höhe bis <select id="zsel">
+      <option value="4000">4 km</option><option value="5000" selected>5 km</option>
+      <option value="8000">8 km</option><option value="12000">12 km</option>
+    </select></label>
+  </div>
+  <div class="bar">
+    <label><input type="checkbox" id="sonne"> Sonneneinstrahlung</label>
+    <label><input type="checkbox" id="glatt" checked> Wolkeninterpolation</label>
+    <label><input type="checkbox" id="best" checked> nur beständige Auslöser</label>
+  </div>
+  <div class="kenn" id="kenn"></div>
+</div>
+</details>
+
+<details id="dlegende">
+<summary>Legende und Lesehilfe</summary>
+<div class="klapp">
   <div class="leg">
     <span id="sonnenleg" style="display:none">
       <i style="background:#ce402a"></i>rote Schicht auf dem Hang: Dicke = Sonneneinstrahlung
@@ -89,11 +134,22 @@
     <span><i style="background:#b4ac9c"></i>Gelände</span>
     <span>Höhenlinien 600 / 800 / 1000 / 1200 / 1400 m</span>
     <span>Schirm = Pilotenposition</span>
-    <span>Farbe nach Oberkante · Parallaxe korrigiert · Wolken geneigt gezeichnet, weil das Paket beim Steigen weiterzieht · Linie = Rückwärtsbahn zum Boden, roter Strich = wo die Wolke herkommt · Bahn je Buckel (eigenständiger Gipfel über 400 m Schartenhöhe), sonst eine je Wolke · nur Fusspunkte, die vier Minuten davor und danach auch da sind · keine bei geschlossener Decke</span>
-    <span>Wind auf 750 / 1450 / 3010 / 5570 m — Pfeil quer zum Bogen, Kreis längs (Punkt = nach NE, Kreuz = nach SW)</span>
     <span>— — geschätzte Wolkenbasis</span>
   </div>
+  <p class="erkl" id="startzeile"></p>
+  <p class="erkl">Der Bogen ist begradigt: waagrecht entlang des Kamms, senkrecht quer
+  dazu, oben ist Nordwest. Farbe nach Oberkante, Parallaxe korrigiert. Wolken stehen
+  geneigt, weil das Paket beim Steigen weiterzieht.</p>
+  <p class="erkl">Die Linie ist die Rückwärtsbahn einer Wolke zum Boden, der rote
+  Strich zeigt, wo sie herkommt. Je Buckel eine Bahn — ein eigenständiger Gipfel über
+  400 m Schartenhöhe zählt als eigener Aufwind —, sonst eine je Wolke. Gezeichnet
+  werden nur Fusspunkte, die vier Minuten davor und danach auch da sind, und keine
+  bei geschlossener Decke.</p>
+  <p class="erkl">Wind auf 750 / 1450 / 3010 / 5570 m: Pfeil quer zum Bogen,
+  Kreis längs (Punkt = nach Nordost, Kreuz = nach Südwest).</p>
 </div>
+</details>
+
 </div>
 
 <script>
@@ -236,7 +292,7 @@ function malKarte(){
   c.setTransform(kc._dpr, 0, 0, kc._dpr, 0, 0);
   const Wd = kc._w, Hd = kc._h;
   const eng = Wd < 560;
-  const ML = eng ? 28 : 40, MB = eng ? 28 : 32, MT = 6, MR = 6;
+  const ML = eng ? 38 : 42, MB = eng ? 38 : 34, MT = 6, MR = 6;
   const px = (Wd - ML - MR) / M.ns, py = (Hd - MT - MB) / M.nq;
   c.fillStyle = "#fff"; c.fillRect(0,0,Wd,Hd);
   const off = M.frame[k] * M.ns * M.nq;
@@ -266,7 +322,7 @@ function malKarte(){
   });
   // Ortschaften
   // Ortsnamen: Punkte immer, Beschriftung nur wo Platz ist
-  c.font = (eng ? "600 10px " : "600 11px ") + "-apple-system,sans-serif";
+  c.font = (eng ? "600 15px " : "600 12px ") + "-apple-system,sans-serif";
   const belegt = [];
   M.orte.forEach(o => {
     const X = ML + ((o[1]-M.s0)/M.ds)*px, Y = MT + (M.nq-1-(o[2]-M.q0)/M.dq)*py;
@@ -285,16 +341,16 @@ function malKarte(){
     c.fillStyle = "#2b2d33"; c.fillText(o[0], X+5, Y+3.5);
   });
   // Achsen
-  c.fillStyle = "#6b6f78"; c.font = "11px -apple-system,sans-serif";
+  c.fillStyle = "#6b6f78"; c.font = (eng ? "15px " : "12px ") + "-apple-system,sans-serif";
   c.textAlign = "right";
   for(let q = -20; q <= 20; q += 10){
     const j = (q - M.q0)/M.dq;
     c.fillText((q>0?"+":"")+q, ML-5, MT + (M.nq-1-j)*py + 4);
   }
   c.textAlign = "center";
-  c.font = (eng ? "10px " : "11px ") + "-apple-system,sans-serif";
+  c.font = (eng ? "15px " : "12px ") + "-apple-system,sans-serif";
   for(let s = 0; s <= 160; s += (eng ? 40 : 20))
-    c.fillText(s, ML + s*px, Hd - MB + 10);
+    c.fillText(s, ML + s*px, Hd - MB + (eng ? 15 : 11));
   c.fillStyle = "#9aa0a8";
   c.fillText("entlang des Bogens [km], links Südwest",
              ML + (Wd-ML-MR)/2, Hd - 3);
@@ -333,13 +389,13 @@ function malSchnitt(){
   c.setTransform(sc._dpr, 0, 0, sc._dpr, 0, 0);
   const Wd = sc._w, Hd = sc._h;
   const eng = Wd < 560;
-  const ML = eng ? 34 : 48, MR = 10, MT = 10, MB = eng ? 30 : 36;
+  const ML = eng ? 46 : 50, MR = 10, MT = 10, MB = eng ? 40 : 38;
   const q0 = M.qpro0, dq = M.dqpro, n = M.nqpro;
   const X = q => ML + (q - q0)/( (n-1)*dq ) * (Wd-ML-MR);
   const Yv = z => MT + (1 - z/ZMAX) * (Hd-MT-MB);
   c.fillStyle = "#fff"; c.fillRect(0,0,Wd,Hd);
   c.strokeStyle = "#eeece8"; c.fillStyle = "#9aa0a8";
-  c.font = "11px -apple-system,sans-serif"; c.textAlign = "right";
+  c.font = (eng ? "15px " : "12px ") + "-apple-system,sans-serif"; c.textAlign = "right";
   const dz = ZMAX <= 5000 ? 1000 : 2000;
   for(let z = 0; z <= ZMAX; z += dz){
     c.beginPath(); c.moveTo(ML, Yv(z)); c.lineTo(Wd-MR, Yv(z)); c.stroke();
@@ -584,7 +640,7 @@ function malSchnitt(){
 
     const jetzt = bahnen(k);
     if(jetzt.decke){
-      c.fillStyle = "rgba(90,84,76,.75)"; c.font = "11px -apple-system,sans-serif";
+      c.fillStyle = "rgba(90,84,76,.75)"; c.font = (eng ? "15px " : "12px ") + "-apple-system,sans-serif";
       c.textAlign = "center";
       c.fillText("geschlossene Decke — keine Einzelwolken unterscheidbar",
                  (ML + Wd - MR)/2, Yv(basis) - 12);
@@ -617,17 +673,17 @@ function malSchnitt(){
   const pp2 = M.pilot[k];
   if(pp2 && !pp2[3] && Math.abs(pp2[0] - skm) <= M.dspro/2 + 1.5){
     schirm(c, X(pp2[1]), Yv(pp2[2]), 1.5);
-    c.fillStyle = "#d9722c"; c.font = "600 11px -apple-system,sans-serif";
+    c.fillStyle = "#d9722c"; c.font = (eng ? "600 16px " : "600 13px ") + "-apple-system,sans-serif";
     c.textAlign = "left";
     c.fillText(pp2[2] + " m", X(pp2[1]) + 16, Yv(pp2[2]) + 4);
   }
 
   // Achse
   c.fillStyle = "#6b6f78"; c.textAlign = "center";
-  c.font = (eng ? "10px " : "11px ") + "-apple-system,sans-serif";
+  c.font = (eng ? "15px " : "12px ") + "-apple-system,sans-serif";
   const schrittQ = eng ? 10 : 5;
   for(let q = -20; q <= 20; q += schrittQ)
-    c.fillText((q>0?"+":"")+q, X(q), Hd - MB + 11);
+    c.fillText((q>0?"+":"")+q, X(q), Hd - MB + (eng ? 15 : 12));
   c.textAlign = "center";
   c.fillStyle = "#9aa0a8";
   c.fillText(eng ? "quer zum Bogen [km], rechts Nordwest"
@@ -661,14 +717,15 @@ function zeige(){
   document.getElementById("titel").textContent =
     `${F.pilot} — ${F.datum_lang}`;
   const teile = [];
-  if(F.schirm)   teile.push(F.schirm);
-  if(F.start)    teile.push(`${F.start}–${F.landung} UTC` +
-                            (F.dauer ? ` (${F.dauer} h)` : ""));
-  if(F.startort) teile.push(`Start ${F.startort}, ${F.starthoehe} m`);
-  if(F.ort)      teile.push(F.ort);
-  teile.push("Bogen begradigt: waagrecht entlang des Kamms, senkrecht quer dazu, oben ist Nordwest");
+  if(F.schirm) teile.push(F.schirm);
+  if(F.start)  teile.push(`${F.start}–${F.landung} UTC` +
+                          (F.dauer ? ` (${F.dauer} h)` : ""));
   document.getElementById("kopfzeile").innerHTML =
     teile.map((t,i) => i ? `<span>·</span>${t}` : `<b>${t}</b>`).join("");
+  const sz = [];
+  if(F.startort) sz.push(`Start ${F.startort}, ${F.starthoehe} m über Meer`);
+  if(F.ort)      sz.push(F.ort);
+  document.getElementById("startzeile").textContent = sz.join(" · ");
 })();
 
 (async () => {
@@ -707,12 +764,12 @@ function zeige(){
   };
   window.addEventListener("resize", neuMessen);
   window.addEventListener("orientationchange", neuMessen);
-  window.starte = () => {
+  function starte(){
     if(spiel) clearInterval(spiel);
     spiel = setInterval(() => {
       k = (k+1) % M.zeiten.length; rz.value = k; zeige();
     }, +document.getElementById("tempo").value);
-  };
+  }
   document.getElementById("tempo").onchange = () => { if(spiel) starte(); };
   document.getElementById("zsel").onchange = e => { ZMAX = +e.target.value; zeige(); };
   document.getElementById("glatt").onchange = e => { glatt = e.target.checked; zeige(); };
@@ -729,5 +786,8 @@ function zeige(){
     starte();
   };
   zeige();
+  // gleich losspielen
+  document.getElementById("play").textContent = "❚❚";
+  starte();
 })();
 </script>
