@@ -1,6 +1,5 @@
 <!doctype html>
 <meta charset="utf-8">
-
 <title>Jura-Player</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <style>
@@ -10,9 +9,13 @@
  h1{font-size:24px;margin:0 0 4px;font-weight:600}
  .warn{color:#c8452a;margin:0 0 22px}
  p{color:#4a4e57;margin:0 0 20px}
- .quellen{font-size:13.5px;line-height:1.75;color:#5d616a;
-          border-left:2px solid #e0dbd1;padding-left:14px;margin-bottom:28px}
- .quellen b{color:#33363d;font-weight:600}
+ details{margin:0 0 28px}
+ summary{cursor:pointer;color:#5d616a;font-size:14px;
+         padding:6px 0;user-select:none}
+ summary:hover{color:#23252b}
+ details p{font-size:13.5px;line-height:1.8;color:#5d616a;
+           border-left:2px solid #e0dbd1;padding-left:14px;margin:8px 0 0}
+ details b{color:#33363d;font-weight:600}
  ul{list-style:none;padding:0;margin:0;border-top:1px solid #e4e0d8}
  li{border-bottom:1px solid #e4e0d8}
  a{display:flex;justify-content:space-between;gap:16px;
@@ -24,16 +27,16 @@
 <main>
 <h1>Jura-Player</h1>
 <p class="warn">Achtung, Suchtpotential 🙂</p>
-<p>Flüge über dem Jurabogen, mit den Wolken darüber. Karte, Querschnitt,
-Wind und Gelände — und der Pilot mittendrin.</p>
-
-<p class="quellen">Physikalische Integration von fünf Quellen:
-<b>Satellitendaten</b> (sichtbarer Kanal für die Wolken, Infrarot für ihre
-Oberkanten, Parallaxe korrigiert) · <b>Wettermodell</b> (Wind auf vier Niveaus,
-Temperaturprofil über neun Druckflächen, daraus Wolkenbasis, Grenzschicht und
-Steigrate) · <b>Flugspur</b> aus dem IGC, in Bärte und Gleitphasen zerlegt ·
-<b>Höhenmodell</b> mit Neigung und Exposition · <b>Sonnenstand</b> für die
-Einstrahlung samt Wolkenschatten.</p>
+<details>
+<summary>Integration von fünf Quellen</summary>
+<p><b>Satellitendaten</b> — sichtbarer Kanal für die Wolken, Infrarot für ihre
+Oberkanten, Parallaxe korrigiert.<br>
+<b>Wettermodell</b> — Wind auf vier Niveaus, Temperaturprofil über neun
+Druckflächen, daraus Wolkenbasis, Grenzschicht und Steigrate.<br>
+<b>Flugspur</b> aus dem IGC, in Bärte und Gleitphasen zerlegt.<br>
+<b>Höhenmodell</b> mit Neigung und Exposition.<br>
+<b>Sonnenstand</b> für die Einstrahlung samt Wolkenschatten.</p>
+</details>
 
 <ul>
 <li><a href="igc-2sSUYy.html"><span>Martin Tanner</span><span class="datum">18. Mai 2025</span></a></li>
