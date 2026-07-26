@@ -1,80 +1,178 @@
 <!doctype html>
+<html lang="de">
 <meta charset="utf-8">
 <title>Jura-Player</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <style>
- body{font:17px/1.55 -apple-system,BlinkMacSystemFont,"Helvetica Neue",sans-serif;
-      color:#23252b;background:#faf9f7;margin:0;padding:52px 24px 90px;
-      -webkit-text-size-adjust:100%}
- main{max-width:640px;margin:0 auto}
- h1{font-size:34px;line-height:1.15;margin:0 0 6px;font-weight:650;
-    letter-spacing:-.6px}
- .warn{color:#c8452a;font-size:18px;margin:0 0 26px}
-
- details{border-top:1px solid #e6e3de;border-bottom:1px solid #e6e3de;
-         margin:0 0 30px}
- summary{cursor:pointer;list-style:none;padding:17px 2px;font-size:17px;
-         color:#4a4e57;user-select:none;display:flex;align-items:center;gap:10px}
- summary::-webkit-details-marker{display:none}
- summary::before{content:"›";display:inline-block;font-size:22px;color:#a8abb2;
-                 transition:transform .15s;line-height:1}
- details[open] summary::before{transform:rotate(90deg)}
- summary:hover{color:#23252b}
- details p{font-size:16px;line-height:1.75;color:#5d616a;
-           padding:0 2px 20px;margin:0}
- details b{color:#33363d;font-weight:600}
-
- ul{list-style:none;padding:0;margin:0}
- li+li{border-top:1px solid #ebe8e2}
- a{display:flex;justify-content:space-between;align-items:baseline;gap:16px;
-   padding:18px 6px;text-decoration:none;color:#23252b;
-   font-size:19px;font-weight:500;border-radius:10px}
- a:hover{background:#f2efe9}
- a:active{background:#eae5dc}
- .datum{color:#9aa0a8;white-space:nowrap;font-size:16px;font-weight:400}
- footer{margin-top:40px;color:#9aa0a8;font-size:15px}
-
- @media (max-width:520px){
-   body{padding:34px 18px 64px;font-size:18px}
-   h1{font-size:38px;letter-spacing:-.9px}
-   .warn{font-size:19px;margin-bottom:24px}
-   summary{font-size:18px;padding:19px 2px}
-   details p{font-size:17px;line-height:1.7;padding-bottom:22px}
-   details{margin-bottom:26px}
-   a{flex-direction:column;gap:4px;align-items:flex-start;
-     padding:17px 6px;font-size:21px;line-height:1.25}
-   .datum{font-size:16px}
-   footer{font-size:16px;margin-top:44px}
+ :root{
+   --papier:#faf9f7; --tinte:#1e2024; --grau:#8a8d94; --linie:#e6e2da;
+   --kalk:#b4ac9c;  --wolke:#7f93bd;  --pilot:#d9722c;
  }
+ *{box-sizing:border-box}
+ body{margin:0;background:var(--papier);color:var(--tinte);
+      font:16px/1.5 -apple-system,BlinkMacSystemFont,"Helvetica Neue",sans-serif;
+      -webkit-text-size-adjust:100%;
+      padding:clamp(28px,7vw,64px) clamp(18px,5vw,28px) 80px}
+ main{max-width:600px;margin:0 auto}
+
+ .augen{font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+        color:var(--grau);margin:0 0 10px}
+ h1{font-family:ui-serif,"Iowan Old Style",Georgia,serif;
+    font-size:clamp(38px,11vw,52px);line-height:1.02;letter-spacing:-.02em;
+    font-weight:600;margin:0 0 14px}
+ .lead{font-size:clamp(17px,4.4vw,19px);line-height:1.45;color:#4c5058;
+       margin:0 0 6px;max-width:34ch}
+ .lead em{font-style:normal;color:var(--pilot)}
+
+ .liste{margin:clamp(26px,7vw,38px) 0 0;border-top:1px solid var(--linie)}
+ .flug{display:block;text-decoration:none;color:inherit;
+       border-bottom:1px solid var(--linie);
+       padding:15px 2px 14px;position:relative}
+ .flug:active{background:#f2efe8}
+ .zeile{display:flex;align-items:baseline;justify-content:space-between;gap:14px}
+ .name{font-size:clamp(18px,4.8vw,20px);font-weight:600;letter-spacing:-.01em}
+ .wann{font-size:14px;color:var(--grau);white-space:nowrap;
+       font-variant-numeric:tabular-nums}
+ .bogen{display:block;width:100%;height:9px;margin-top:11px;overflow:visible}
+ .dauer{font-size:13px;color:var(--grau);margin-top:7px}
+
+ .schluessel{font-size:13.5px;line-height:1.6;color:var(--grau);
+             margin:16px 2px 0}
+
+ details{margin:clamp(26px,7vw,36px) 0 0;border-top:1px solid var(--linie)}
+ summary{cursor:pointer;list-style:none;padding:16px 2px;font-size:16px;
+         color:#4c5058;display:flex;align-items:center;gap:9px;user-select:none}
+ summary::-webkit-details-marker{display:none}
+ summary::before{content:"";width:7px;height:7px;flex:none;
+   border-right:1.5px solid var(--grau);border-bottom:1.5px solid var(--grau);
+   transform:rotate(-45deg);transition:transform .18s}
+ details[open] summary::before{transform:rotate(45deg)}
+ details div{padding:0 2px 22px;font-size:15px;line-height:1.72;color:#5a5e66}
+ details b{color:var(--tinte);font-weight:600}
+ details p{margin:0 0 9px}
+
+ footer{margin-top:44px;font-size:13.5px;color:var(--grau)}
+ @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 <main>
 <h1>Jura-Player</h1>
-<p class="warn">Achtung, Suchtpotential 🙂</p>
+<p class="lead"><em>Achtung, Suchtpotential 🙂</em></p>
+
+<div class="liste">
+<a class="flug" href="igc-2sSUYy.html">
+  <span class="zeile"><span class="name">Martin Tanner</span><span class="wann">18. Mai 2025</span></span>
+  <svg class="bogen" viewBox="0 0 168 9" preserveAspectRatio="none" aria-hidden="true">
+    <line x1="0" y1="4.5" x2="168" y2="4.5" stroke="#d8d2c6" stroke-width="1.2"/>
+    <line x1="1.0" y1="4.5" x2="166.0" y2="4.5" stroke="#7f93bd" stroke-width="5" stroke-linecap="round"/>
+  </svg>
+  <span class="dauer">8.2 h · Bogen-km 1 bis 166</span>
+</a>
+<a class="flug" href="2025-05-24-XCT-SRO-01.html">
+  <span class="zeile"><span class="name">Serena Ronchi</span><span class="wann">24. Mai 2025</span></span>
+  <svg class="bogen" viewBox="0 0 168 9" preserveAspectRatio="none" aria-hidden="true">
+    <line x1="0" y1="4.5" x2="168" y2="4.5" stroke="#d8d2c6" stroke-width="1.2"/>
+    <line x1="1.0" y1="4.5" x2="120.0" y2="4.5" stroke="#7f93bd" stroke-width="5" stroke-linecap="round"/>
+  </svg>
+  <span class="dauer">7.4 h · Bogen-km 1 bis 120</span>
+</a>
+<a class="flug" href="2025-05-24-XCT-VDA-01.html">
+  <span class="zeile"><span class="name">Von Niederhäusern Daniel</span><span class="wann">24. Mai 2025</span></span>
+  <svg class="bogen" viewBox="0 0 168 9" preserveAspectRatio="none" aria-hidden="true">
+    <line x1="0" y1="4.5" x2="168" y2="4.5" stroke="#d8d2c6" stroke-width="1.2"/>
+    <line x1="48.0" y1="4.5" x2="166.0" y2="4.5" stroke="#7f93bd" stroke-width="5" stroke-linecap="round"/>
+  </svg>
+  <span class="dauer">5.2 h · Bogen-km 48 bis 166</span>
+</a>
+<a class="flug" href="2025-06-09-XCT-HST-08.html">
+  <span class="zeile"><span class="name">Hans Strahm</span><span class="wann">9. Juni 2025</span></span>
+  <svg class="bogen" viewBox="0 0 168 9" preserveAspectRatio="none" aria-hidden="true">
+    <line x1="0" y1="4.5" x2="168" y2="4.5" stroke="#d8d2c6" stroke-width="1.2"/>
+    <line x1="71.0" y1="4.5" x2="161.0" y2="4.5" stroke="#7f93bd" stroke-width="5" stroke-linecap="round"/>
+  </svg>
+  <span class="dauer">8.5 h · Bogen-km 71 bis 161</span>
+</a>
+<a class="flug" href="2025-06-09-XCT-PAE-01.html">
+  <span class="zeile"><span class="name">Philipp Aeschbach</span><span class="wann">9. Juni 2025</span></span>
+  <svg class="bogen" viewBox="0 0 168 9" preserveAspectRatio="none" aria-hidden="true">
+    <line x1="0" y1="4.5" x2="168" y2="4.5" stroke="#d8d2c6" stroke-width="1.2"/>
+    <line x1="87.0" y1="4.5" x2="165.0" y2="4.5" stroke="#7f93bd" stroke-width="5" stroke-linecap="round"/>
+  </svg>
+  <span class="dauer">7.4 h · Bogen-km 87 bis 165</span>
+</a>
+<a class="flug" href="2025-07-12-XCT-KLU-01.html">
+  <span class="zeile"><span class="name">Kubo Ludma</span><span class="wann">12. Juli 2025</span></span>
+  <svg class="bogen" viewBox="0 0 168 9" preserveAspectRatio="none" aria-hidden="true">
+    <line x1="0" y1="4.5" x2="168" y2="4.5" stroke="#d8d2c6" stroke-width="1.2"/>
+    <line x1="47.0" y1="4.5" x2="160.0" y2="4.5" stroke="#7f93bd" stroke-width="5" stroke-linecap="round"/>
+  </svg>
+  <span class="dauer">10.2 h · Bogen-km 47 bis 160</span>
+</a>
+<a class="flug" href="2025-07-12-XCT-KHA-01.html">
+  <span class="zeile"><span class="name">Kurt Hänni</span><span class="wann">12. Juli 2025</span></span>
+  <svg class="bogen" viewBox="0 0 168 9" preserveAspectRatio="none" aria-hidden="true">
+    <line x1="0" y1="4.5" x2="168" y2="4.5" stroke="#d8d2c6" stroke-width="1.2"/>
+    <line x1="47.0" y1="4.5" x2="165.0" y2="4.5" stroke="#7f93bd" stroke-width="5" stroke-linecap="round"/>
+  </svg>
+  <span class="dauer">9.2 h · Bogen-km 47 bis 165</span>
+</a>
+<a class="flug" href="2026-04-18-XTR-ACCDB03D9403-01.html">
+  <span class="zeile"><span class="name">Kürtu</span><span class="wann">18. April 2026</span></span>
+  <svg class="bogen" viewBox="0 0 168 9" preserveAspectRatio="none" aria-hidden="true">
+    <line x1="0" y1="4.5" x2="168" y2="4.5" stroke="#d8d2c6" stroke-width="1.2"/>
+    <line x1="33.0" y1="4.5" x2="156.0" y2="4.5" stroke="#7f93bd" stroke-width="5" stroke-linecap="round"/>
+  </svg>
+  <span class="dauer">8.4 h · Bogen-km 33 bis 156</span>
+</a>
+<a class="flug" href="2026-05-27-XCT-JLA-01.html">
+  <span class="zeile"><span class="name">Joris Lardon</span><span class="wann">27. Mai 2026</span></span>
+  <svg class="bogen" viewBox="0 0 168 9" preserveAspectRatio="none" aria-hidden="true">
+    <line x1="0" y1="4.5" x2="168" y2="4.5" stroke="#d8d2c6" stroke-width="1.2"/>
+    <line x1="46.0" y1="4.5" x2="138.0" y2="4.5" stroke="#7f93bd" stroke-width="5" stroke-linecap="round"/>
+  </svg>
+  <span class="dauer">8.0 h · Bogen-km 46 bis 138</span>
+</a>
+<a class="flug" href="2026-06-20-XCT-KLU-01.html">
+  <span class="zeile"><span class="name">Kubo Ludma</span><span class="wann">20. Juni 2026</span></span>
+  <svg class="bogen" viewBox="0 0 168 9" preserveAspectRatio="none" aria-hidden="true">
+    <line x1="0" y1="4.5" x2="168" y2="4.5" stroke="#d8d2c6" stroke-width="1.2"/>
+    <line x1="100.0" y1="4.5" x2="146.0" y2="4.5" stroke="#7f93bd" stroke-width="5" stroke-linecap="round"/>
+  </svg>
+  <span class="dauer">6.1 h · Bogen-km 100 bis 146</span>
+</a>
+<a class="flug" href="2026-06-27-XCT-SBE-01.html">
+  <span class="zeile"><span class="name">Sebastian Benz</span><span class="wann">27. Juni 2026</span></span>
+  <svg class="bogen" viewBox="0 0 168 9" preserveAspectRatio="none" aria-hidden="true">
+    <line x1="0" y1="4.5" x2="168" y2="4.5" stroke="#d8d2c6" stroke-width="1.2"/>
+    <line x1="20.0" y1="4.5" x2="166.0" y2="4.5" stroke="#7f93bd" stroke-width="5" stroke-linecap="round"/>
+  </svg>
+  <span class="dauer">8.7 h · Bogen-km 20 bis 166</span>
+</a>
+<a class="flug" href="2026-07-22-XCT-MMO-09.html">
+  <span class="zeile"><span class="name">Morane Montavon</span><span class="wann">22. Juli 2026</span></span>
+  <svg class="bogen" viewBox="0 0 168 9" preserveAspectRatio="none" aria-hidden="true">
+    <line x1="0" y1="4.5" x2="168" y2="4.5" stroke="#d8d2c6" stroke-width="1.2"/>
+    <line x1="57.0" y1="4.5" x2="165.0" y2="4.5" stroke="#7f93bd" stroke-width="5" stroke-linecap="round"/>
+  </svg>
+  <span class="dauer">7.5 h · Bogen-km 57 bis 165</span>
+</a>
+</div>
+
+<p class="schluessel">Der Balken zeigt, welchen Abschnitt des Bogens der Flug
+ber&uuml;hrt hat &mdash; links S&uuml;dwest (La&nbsp;D&ocirc;le), rechts Nordost
+(Weissenstein).</p>
+
 <details>
-<summary>Integration von fünf Quellen</summary>
-<p><b>Satellitendaten</b> — sichtbarer Kanal für die Wolken, Infrarot für ihre
-Oberkanten, Parallaxe korrigiert.<br>
-<b>Wettermodell</b> — Wind auf vier Niveaus, Temperaturprofil über neun
-Druckflächen, daraus Wolkenbasis, Grenzschicht und Steigrate.<br>
-<b>Flugspur</b> aus dem IGC, in Bärte und Gleitphasen zerlegt.<br>
-<b>Höhenmodell</b> mit Neigung und Exposition.<br>
-<b>Sonnenstand</b> für die Einstrahlung samt Wolkenschatten.</p>
+<summary>Integration von f&uuml;nf Quellen</summary>
+<div>
+<p><b>Satellitendaten</b> &mdash; sichtbarer Kanal f&uuml;r die Wolken, Infrarot
+f&uuml;r ihre Oberkanten, Parallaxe korrigiert.</p>
+<p><b>Wettermodell</b> &mdash; Wind auf vier Niveaus, Temperaturprofil &uuml;ber
+neun Druckfl&auml;chen, daraus Wolkenbasis, Grenzschicht und Steigrate.</p>
+<p><b>Flugspur</b> aus dem IGC, in B&auml;rte und Gleitphasen zerlegt.</p>
+<p><b>H&ouml;henmodell</b> mit Neigung und Exposition.</p>
+<p><b>Sonnenstand</b> f&uuml;r die Einstrahlung samt Wolkenschatten.</p>
+</div>
 </details>
 
-<ul>
-<li><a href="igc-2sSUYy.html"><span>Martin Tanner</span><span class="datum">18. Mai 2025</span></a></li>
-<li><a href="2025-05-24-XCT-SRO-01.html"><span>Serena Ronchi</span><span class="datum">24. Mai 2025</span></a></li>
-<li><a href="2025-05-24-XCT-VDA-01.html"><span>Daniel von Niederhäusern</span><span class="datum">24. Mai 2025</span></a></li>
-<li><a href="2025-06-09-XCT-HST-08.html"><span>Hans Strahm</span><span class="datum">9. Juni 2025</span></a></li>
-<li><a href="2025-06-09-XCT-PAE-01.html"><span>Philipp Aeschbach</span><span class="datum">9. Juni 2025</span></a></li>
-<li><a href="2025-07-12-XCT-KHA-01.html"><span>Kurt Hänni</span><span class="datum">12. Juli 2025</span></a></li>
-<li><a href="2025-07-12-XCT-KLU-01.html"><span>Kubo Ludma</span><span class="datum">12. Juli 2025</span></a></li>
-<li><a href="2026-04-18-XTR-ACCDB03D9403-01.html"><span>Kürtu</span><span class="datum">18. April 2026</span></a></li>
-<li><a href="2026-05-27-XCT-JLA-01.html"><span>Joris Lardon</span><span class="datum">27. Mai 2026</span></a></li>
-<li><a href="2026-06-20-XCT-KLU-01.html"><span>Kubo Ludma</span><span class="datum">20. Juni 2026</span></a></li>
-<li><a href="2026-06-27-XCT-SBE-01.html"><span>Sebastian Benz</span><span class="datum">27. Juni 2026</span></a></li>
-<li><a href="2026-07-22-XCT-MMO-09.html"><span>Morane Montavon</span><span class="datum">22. Juli 2026</span></a></li>
-</ul>
-
-<footer>Jörg Korner</footer>
+<footer>J&ouml;rg Korner</footer>
 </main>

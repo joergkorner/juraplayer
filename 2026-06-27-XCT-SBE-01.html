@@ -785,6 +785,32 @@ function zeige(){
     this.textContent = "❚❚";
     starte();
   };
+  // Stelle merken, damit ein Besuch auf der Übersicht sie nicht verliert
+  const SCHLUESSEL = "juraplayer:" + location.pathname;
+  const merken = () => {
+    try{
+      localStorage.setItem(SCHLUESSEL, JSON.stringify(
+        {k: k, skm: skm, folgt: folgt, zeit: Date.now()}));
+    }catch(e){}
+  };
+  try{
+    const roh = localStorage.getItem(SCHLUESSEL);
+    if(roh){
+      const s = JSON.parse(roh);
+      if(s && Number.isFinite(s.k) && s.k >= 0 && s.k < M.zeiten.length
+         && Date.now() - (s.zeit||0) < 12*3600*1000){
+        k = s.k; rz.value = k;
+        if(Number.isFinite(s.skm)) skm = s.skm;
+        if(typeof s.folgt === "boolean") folgt = s.folgt;
+      }
+    }
+  }catch(e){}
+  window.addEventListener("pagehide", merken);
+  document.addEventListener("visibilitychange", () => {
+    if(document.visibilityState === "hidden") merken();
+  });
+  setInterval(merken, 3000);
+
   zeige();
   // gleich losspielen
   document.getElementById("play").textContent = "❚❚";
