@@ -211,7 +211,7 @@
 </div>
 </details>
 
-<p class="vers">Vorlage v81 · bauen v20 · Profil 0.25 km × -32…42 km</p>
+<p class="vers">Vorlage v82 · bauen v20 · Profil 0.25 km × -32…42 km</p>
 
 </div>
 
@@ -412,6 +412,10 @@ function tonAn(){
 function tonSchritt(vz){
   if(!TON_AN || !AC) return;
   const t2 = AC.currentTime;
+  if(!spiel){                       // Player steht: immer Stille -- sonst
+    tonG.gain.setTargetAtTime(0, t2, 0.02);   // friert der Alarm ein
+    return;
+  }
   const alarmAktiv = warnLuft && warnSeit &&
     ((performance.now()/1000 - warnSeit) % 33) < 3;  // 3 s Alarm, 30 s Pause
   if(alarmAktiv){
@@ -2276,7 +2280,11 @@ const WENDEN = new Set();
     zeige();
   };
   document.getElementById("play").onclick = function(){
-    if(spiel){ cancelAnimationFrame(spiel); spiel = null; this.textContent = "▶"; return; }
+    if(spiel){
+      cancelAnimationFrame(spiel); spiel = null; this.textContent = "▶";
+      if(tonG) tonG.gain.setTargetAtTime(0, AC.currentTime, 0.02);
+      return;
+    }
     this.textContent = "❚❚";
     starte();
   };
