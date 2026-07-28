@@ -49,7 +49,8 @@
       margin-bottom:14px}
  .leg i{display:inline-block;width:13px;height:13px;border-radius:3px;
         margin-right:6px;vertical-align:-2px}
- .quellen{border-collapse:collapse;margin:6px 0 2px;font-size:12.5px;color:#555}
+ .hinweis{font-size:12px;color:#8a8e96;margin:2px 0 6px;max-width:640px}
+.quellen{border-collapse:collapse;margin:6px 0 2px;font-size:12.5px;color:#555}
 .quellen td{padding:2px 14px 2px 0;vertical-align:top}
 .quellen td:first-child{font-weight:600;color:#3a3c42;white-space:nowrap}
 .erkl{font-size:14.5px;line-height:1.65;color:#6b6f78;margin:0 0 11px;
@@ -77,7 +78,8 @@
    .kenn{font-size:15px}
    summary{font-size:17px;padding:17px 2px}
    .leg{font-size:15px}
-   .quellen{border-collapse:collapse;margin:6px 0 2px;font-size:12.5px;color:#555}
+   .hinweis{font-size:12px;color:#8a8e96;margin:2px 0 6px;max-width:640px}
+.quellen{border-collapse:collapse;margin:6px 0 2px;font-size:12.5px;color:#555}
 .quellen td{padding:2px 14px 2px 0;vertical-align:top}
 .quellen td:first-child{font-weight:600;color:#3a3c42;white-space:nowrap}
 .erkl{font-size:15.5px}
@@ -129,7 +131,6 @@
 <div class="klapp">
   <div class="bar">
     <span class="uhr" id="poskm">–</span>
-    <button id="folge" title="Schnitt wieder an den Piloten heften">↺ dem Piloten folgen</button>
     <label><span id="labTempo">Tempo</span> <select id="tempo">
       <option value="10000">Echtzeit</option>
       <option value="2500">4-fach</option>
@@ -160,24 +161,19 @@
     <label><input type="checkbox" id="sonne" checked> Sonneneinstrahlung</label>
     <label><input type="checkbox" id="glatt" checked> Wolkeninterpolation</label>
     <label><input type="checkbox" id="best" checked> nur beständige Auslöser</label>
-    <label><input type="checkbox" id="roentgen"> Röntgenblick</label>
     <label><input type="checkbox" id="wege" checked> Aufstiegswege</label>
-    <label><input type="checkbox" id="hotk" checked> kk7-Thermik</label>
-    <label><input type="checkbox" id="blauk"> Blue-Sky-Schläuche</label>
     <span id="luftliste"></span>
     <label><span id="labWarn">Warnabstand</span> <select id="warnw">
       <option value="0.1">100 m</option><option value="0.2">200 m</option>
       <option value="0.3">300 m</option><option value="0.5" selected>500 m</option>
     </select></label>
-    <label><input type="checkbox" id="basisdynk"> Basis dynamisch (Pilot hebt an)</label>
-    <label><input type="checkbox" id="seedbg"> See-Marken</label>
-    <label><input type="checkbox" id="gruenAn" checked> wachsende Wolken grün markieren</label>
-    <label><input type="checkbox" id="rotAn" checked> schrumpfende Wolken rot markieren</label>
+    <label><input type="checkbox" id="basisdynk" checked> Annahme: Pilot meidet Wolken — Basis entsprechend angehoben</label>
     <label><span id="labSchw">Schwelle</span> <select id="schw">
       <option value="5">5 %</option><option value="10">10 %</option>
       <option value="15">15 %</option><option value="20" selected>20 %</option>
       <option value="25">25 %</option><option value="30">30 %</option>
     </select></label>
+    <div class="hinweis" id="schwHint"></div>
   </div>
   <div class="kenn" id="kenn"></div>
 </div>
@@ -215,7 +211,7 @@
 </div>
 </details>
 
-<p class="vers">Vorlage v77 · bauen v20 · Profil 0.25 km × -32…42 km</p>
+<p class="vers">Vorlage v81 · bauen v20 · Profil 0.25 km × -32…42 km</p>
 
 </div>
 
@@ -224,12 +220,12 @@ const M = {"ns":168,"nq":125,"q0":-20.0,"dq":0.5,"s0":0.0,"ds":1.0,"npro":672,"n
 let W, TERK, PRO, NEIG, EXPO, WAS, ALT, KK7 = null, BLAUP = [], k = 0, FRAC = 0, skm = 40, ZMAX = 5000, spiel = null;
 let SPR = (localStorage.getItem("jura_spr") || "de");
 const TT = {
-de:{sumKarte:"Karte",sumQuer:"Querschnitt",sumModus:"Abspielmodus",
+de:{sumKarte:"Karte",sumQuer:"Querschnitt",sumModus:"Feineinstellungen",
 sumLeg:"Legende und Lesehilfe",titQ:"Querschnitt bei",titP:"Pilotensicht",
 vollbild:"Vollbild",folge:"↺ dem Piloten folgen",
 folgeT:"Schnitt wieder an den Piloten heften",
 labTempo:"Tempo",labFern:"Fernsicht",labScheiben:"Scheiben",
-labFov:"Blickwinkel",labHoehe:"Höhe bis",labSchw:"Schwelle",
+labFov:"Blickwinkel",labHoehe:"Höhe bis",labSchw:"Färbe-Schwelle",schwHint:"Die Schwelle steuert das Anfärben der Wolken: ändert sich das Wolkenvolumen zwischen zwei Satellitenbildern um mehr als diesen Wert, wird die Wolke gefärbt — grün = wachsend, rot = schrumpfend.",
 echtzeit:"Echtzeit",fach:"-fach",tRuhig2:" (sehr ruhig)",tRuhig:" (ruhig)",
 tZuegig:" (zügig)",tSchnell:" (schnell)",
 sonne:"Sonneneinstrahlung",glatt:"Wolkeninterpolation",
@@ -237,7 +233,7 @@ best:"nur beständige Auslöser",roentgen:"Röntgenblick",wege:"Aufstiegswege",
 hotk:"kk7-Thermik",blauk:"Blue-Sky-Schläuche",luftk:"Lufträume",labWarn:"Warnabstand",iTon:"Ton",iAgl:"AGL",
 warnL:nm=>`⚠ Achtung Luftraum ${nm} nah`,
 warnIn:nm=>`⚠ im Luftraum ${nm}`,
-basisdynk:"Basis dynamisch (Pilot hebt an)",seedbg:"See-Marken",
+basisdynk:"Annahme: Pilot meidet Wolken — Basis entsprechend angehoben",bWolk:"Färbung",bTrig:"kk7 Trig.",bTherm:"kk7 Therm.",bRoe:"Röntgen",iVario:"Vario",seedbg:"See-Marken",
 gruenAn:"wachsende Wolken grün markieren",rotAn:"schrumpfende Wolken rot markieren",
 blick:"Blick nach ",no:"Nordost",sw:"Südwest",roeBis:" · Röntgen bis ",
 augen:"Augenhöhe ",wende:"Wendepunkt",ausserB:"Pilot ausserhalb des Bogens",
@@ -263,12 +259,12 @@ q:[["Wolken","EUMETSAT Meteosat — sichtbares Licht, IR für Obergrenzen"],
 ["Gelände","SRTM-Radar-Höhenmodell (für den Player begradigte Seeflächen)"],
 ["Sonnenstand","astronomisch berechnet aus Datum und Ort"],
 ["Darstellung","Jurabogen begradigt — alle Scheiben stehen parallel hintereinander, oben ist Nordwest"]]},
-en:{sumKarte:"Map",sumQuer:"Cross-section",sumModus:"Playback",
+en:{sumKarte:"Map",sumQuer:"Cross-section",sumModus:"Fine settings",
 sumLeg:"Legend and key",titQ:"Cross-section at",titP:"Pilot's view",
 vollbild:"Fullscreen",folge:"↺ follow the pilot",
 folgeT:"Re-attach the section to the pilot",
 labTempo:"Speed",labFern:"View range",labScheiben:"Slices",
-labFov:"Field of view",labHoehe:"Height up to",labSchw:"Threshold",
+labFov:"Field of view",labHoehe:"Height up to",labSchw:"colouring threshold",schwHint:"This threshold controls the cloud colouring: if a cloud’s volume changes by more than this value between two satellite images, it gets tinted — green = growing, red = shrinking.",
 echtzeit:"real time",fach:"×",tRuhig2:" (very calm)",tRuhig:" (calm)",
 tZuegig:" (brisk)",tSchnell:" (fast)",
 sonne:"sunlight and shadows",glatt:"cloud interpolation",
@@ -276,7 +272,7 @@ best:"persistent triggers only",roentgen:"x-ray view",wege:"ascent paths",
 hotk:"kk7 thermals",blauk:"blue-sky thermal tubes",luftk:"airspaces",labWarn:"alert distance",iTon:"Sound",iAgl:"AGL",
 warnL:nm=>`⚠ warning: airspace ${nm} near`,
 warnIn:nm=>`⚠ inside airspace ${nm}`,
-basisdynk:"dynamic base (pilot raises it)",seedbg:"lake markers",
+basisdynk:"assumption: pilot avoids clouds — base raised accordingly",bWolk:"coloring",bTrig:"kk7 trig.",bTherm:"kk7 therm.",bRoe:"x-ray",iVario:"vario",seedbg:"lake markers",
 gruenAn:"mark growing clouds green",rotAn:"mark shrinking clouds red",
 blick:"Looking ",no:"northeast",sw:"southwest",roeBis:" · x-ray to ",
 augen:"eye level ",wende:"Turnpoint",ausserB:"Pilot outside the arc",
@@ -305,15 +301,14 @@ q:[["Clouds","EUMETSAT Meteosat — visible light, IR for cloud tops"],
 function tf(kk2){ return TT[SPR][kk2]; }
 function sprAnwenden(){
   for(const id of ["sumKarte","sumQuer","sumModus","sumLeg","titQ","titP",
-                   "labTempo","labFern","labScheiben","labFov","labHoehe","labSchw","labWarn"]){
+                   "labTempo","labFern","labScheiben","labFov","labHoehe","labSchw","labWarn","schwHint"]){
     const el2 = document.getElementById(id);
     if(el2) el2.textContent = tf(id);
   }
   const vb = document.getElementById("vollk"); if(vb) vb.textContent = tf("vollbild");
   const fo = document.getElementById("folge");
   if(fo){ fo.textContent = tf("folge"); fo.title = tf("folgeT"); }
-  for(const id of ["sonne","glatt","best","roentgen","wege","hotk","blauk",
-                   "basisdynk","seedbg","gruenAn","rotAn"]){
+  for(const id of ["sonne","glatt","best","wege","basisdynk"]){
     const inp = document.getElementById(id);
     if(inp && inp.parentNode){
       const kn = inp.parentNode.childNodes;
@@ -418,7 +413,7 @@ function tonSchritt(vz){
   if(!TON_AN || !AC) return;
   const t2 = AC.currentTime;
   const alarmAktiv = warnLuft && warnSeit &&
-    ((performance.now()/1000 - warnSeit) % 8) < 3;   // 3 s Alarm, 5 s Pause
+    ((performance.now()/1000 - warnSeit) % 33) < 3;  // 3 s Alarm, 30 s Pause
   if(alarmAktiv){
     const ph = Math.floor(t2*4) % 2;
     oszi.frequency.setTargetAtTime(ph ? 880 : 620, t2, 0.01);
@@ -430,7 +425,7 @@ function tonSchritt(vz){
     const an = Math.sin(2*Math.PI*rate*t2) > 0;
     oszi.frequency.setTargetAtTime(450 + vz*90, t2, 0.02);
     tonG.gain.setTargetAtTime(an ? 0.08 : 0.0, t2, 0.015);
-  } else if(vz !== null && vz < -1.0){            // Saufton
+  } else if(vz !== null && vz < -1.5){            // Saufton
     oszi.frequency.setTargetAtTime(220, t2, 0.05);
     tonG.gain.setTargetAtTime(0.05, t2, 0.05);
   } else tonG.gain.setTargetAtTime(0, t2, 0.05);
@@ -680,17 +675,6 @@ function malKarte(){
   if(pp && !pp[3]){
     const X = ML + ((pp[0]-M.s0)/M.ds)*px, Y = MT + (M.nq-1-(pp[1]-M.q0)/M.dq)*py;
     schirm(c, X, Y, 1.05);
-  }
-  // Schnittlinie
-  const xs = ML + (skm / M.ds) * px;
-  c.strokeStyle = folgt ? "#d9722c" : "#b8541c"; c.lineWidth = 2;
-  c.beginPath(); c.moveTo(xs, MT+12); c.lineTo(xs, Hd - MB); c.stroke();
-  // Griff
-  c.fillStyle = folgt ? "#d9722c" : "#b8541c";
-  c.beginPath(); c.roundRect(xs-13, MT-2, 26, 15, 4); c.fill();
-  c.strokeStyle = "#fff"; c.lineWidth = 1.4;
-  for(const dx of [-4, 0, 4]){
-    c.beginPath(); c.moveTo(xs+dx, MT+2); c.lineTo(xs+dx, MT+9); c.stroke();
   }
 }
 
@@ -1039,6 +1023,15 @@ function malSicht(){
     if(d < 0.35) return null;
     return [cx + (dX*rx + dY*ry)/d*f, cy - ((z - zP)/1000)/d*f, d];
   };
+  // wie proj, aber KLEMMT an der Nahebene statt zu verwerfen -- fuer
+  // Luftraumflaechen, die bis an die Kamera heranreichen
+  const projL = (X2, Y2, z) => {
+    const dX = X2 - camX, dY = Y2 - camY;
+    const d = dX*fx + dY*fy;
+    if(d < 0.05) return null;
+    const dc = Math.max(d, 0.35);
+    return [cx + (dX*rx + dY*ry)/dc*f, cy - ((z - zP)/1000)/dc*f, dc];
+  };
   const misch = (a2, b2, t) => `rgb(${Math.round(a2[0]+(b2[0]-a2[0])*t)},`
     + `${Math.round(a2[1]+(b2[1]-a2[1])*t)},${Math.round(a2[2]+(b2[2]-a2[2])*t)})`;
 
@@ -1353,8 +1346,9 @@ function malSicht(){
         const j = Math.min(M.nqpro - 1, x*2);
         const q = M.qpro0 + j*M.dqpro;
         const da3 = inLuft(L2, sSl2, q);
-        DL.push(da3 ? proj(wx0 + q*wnx, wy0 + q*wny, L2.top) : null);
-        BOT.push(da3 ? P2[x] : null);
+        DL.push(da3 ? projL(wx0 + q*wnx, wy0 + q*wny, L2.top) : null);
+        BOT.push(da3
+          ? projL(wx0 + q*wnx, wy0 + q*wny, PRO[iF*M.nqpro + j] || 0) : null);
       }
       // Lauf-Enden dieser Scheibe: dort stehen die Seitenwaende
       const laeufe2 = [];
@@ -1366,10 +1360,10 @@ function malSicht(){
           const qA = M.qpro0 + Math.min(M.nqpro-1, vA*2)*M.dqpro;
           const qB = M.qpro0 + Math.min(M.nqpro-1, (x-1)*2)*M.dqpro;
           laeufe2.push({
-            o: [proj(wx0 + qA*wnx, wy0 + qA*wny, L2.top),
-                proj(wx0 + qB*wnx, wy0 + qB*wny, L2.top)],
-            u: [proj(wx0 + qA*wnx, wy0 + qA*wny, terrainBei(sSl2, qA)),
-                proj(wx0 + qB*wnx, wy0 + qB*wny, terrainBei(sSl2, qB))]});
+            o: [projL(wx0 + qA*wnx, wy0 + qA*wny, L2.top),
+                projL(wx0 + qB*wnx, wy0 + qB*wny, L2.top)],
+            u: [projL(wx0 + qA*wnx, wy0 + qA*wny, terrainBei(sSl2, qA)),
+                projL(wx0 + qB*wnx, wy0 + qB*wny, terrainBei(sSl2, qB))]});
           vA = -1;
         }
       }
@@ -1613,9 +1607,9 @@ function malSicht(){
     if(warnLuft && !vorher) warnSeit = performance.now()/1000;
     if(!warnLuft) warnSeit = 0;
     if(warnLuft){
-      c.font = "bold " + (eng ? "15px " : "16px ") + "-apple-system,sans-serif";
+      c.font = "bold " + (eng ? "19px " : "22px ") + "-apple-system,sans-serif";
       c.textAlign = "center";
-      const wy2 = voll ? 78 : 52;
+      const wy2 = Hd*0.5;
       c.lineWidth = 4; c.strokeStyle = "rgba(255,255,255,.85)";
       const wtx = (warnDrin ? TT[SPR].warnIn : TT[SPR].warnL)(warnLuft);
       c.strokeText(wtx, Wd/2, wy2);
@@ -1981,8 +1975,8 @@ function malSicht(){
     const vgKmh = (pp.length > 7 && pp[7] >= 0) ? pp[7] : null;
     const vg = vgKmh === null ? null : vgKmh/3.6;
     const inst = [
-      [tf("iSteig"), vz === null ? "–" : (vz > 0.05 ? vz.toFixed(1) : "0"), "m/s"],
-      [tf("iSink"),  vz === null ? "–" : (vz < -0.05 ? (-vz).toFixed(1) : "0"), "m/s"],
+      [vz !== null && vz < -0.05 ? tf("iSink") : tf("iSteig"),
+       vz === null ? "–" : Math.abs(vz) < 0.05 ? "0" : Math.abs(vz).toFixed(1), "m/s"],
       [tf("iGrund"),   vgKmh === null ? "–" : vgKmh.toFixed(0), "km/h"],
       [tf("iGleit"), (vz === null || vg === null) ? "–"
                   : (vz < -0.15 ? (vg/(-vz)).toFixed(1) : "∞"), ""],
@@ -2007,30 +2001,41 @@ function malSicht(){
       c.fillText(inst[i2][0], cx2, y0 - r0*0.42);
       if(inst[i2][2]) c.fillText(inst[i2][2], cx2, y0 + r0*0.52);
     }
-    // sechstes Fenster: TON-KNOPF (Klick schaltet Vario + Warnton)
+    // FUENF KNOEPFE unten rechts: Faerbung, kk7 Trig., kk7 Therm.,
+    // Ton, Roentgen
     {
-      const cx6 = 16 + r0 + 6*ab0;
-      window._tonKreis = [cx6, y0, r0];
-      c.beginPath(); c.arc(cx6, y0, r0, 0, 6.3);
-      c.fillStyle = TON_AN ? "rgba(233,244,233,0.9)" : "rgba(255,255,255,0.72)";
-      c.fill();
-      c.strokeStyle = TON_AN ? "rgba(38,110,52,0.75)" : "rgba(90,95,104,0.55)";
-      c.lineWidth = TON_AN ? 1.8 : 1; c.stroke();
-      c.font = (eng ? "8px " : "9px ") + "-apple-system,sans-serif";
-      c.fillStyle = "#6b6f78"; c.textAlign = "center";
-      c.fillText(tf("iTon"), cx6, y0 - r0*0.42);
-      c.font = "600 " + (eng ? "13px " : "15px ") + "-apple-system,sans-serif";
-      c.fillStyle = TON_AN ? "#2a6e34" : "#3a3e46";
-      c.fillText("♪", cx6, y0 + 4);
-      if(!TON_AN){
-        c.strokeStyle = "#9a3b32"; c.lineWidth = 1.8;
-        c.beginPath(); c.moveTo(cx6 - r0*0.4, y0 + r0*0.4);
-        c.lineTo(cx6 + r0*0.4, y0 - r0*0.4); c.stroke();
+      const cyB = Hd - 14 - r0;
+      // Beschriftung sprachneutral, zweizeilig wie vorgegeben
+      const knoepfe = [
+        ["faerb", ["cloud", "color"],   GRUEN_AN || ROT_AN],
+        ["trig",  ["trigger", "kk7"],   BLAU_AN],
+        ["therm", ["hotspot", "kk7"],   HOT_AN],
+        ["ton",   ["Sound"],            TON_AN],
+        ["roe",   ["x-ray"],            !!roentgenT]
+      ];
+      window._knoepfe = [];
+      for(let i2 = 0; i2 < knoepfe.length; i2++){
+        const [kid, zeilen, an] = knoepfe[i2];
+        const cxB = Wd - 14 - r0 - (knoepfe.length - 1 - i2)*ab0;
+        window._knoepfe.push([cxB, cyB, r0, kid]);
+        c.beginPath(); c.arc(cxB, cyB, r0, 0, 6.3);
+        c.fillStyle = an ? "rgba(233,244,233,0.92)" : "rgba(255,255,255,0.72)";
+        c.fill();
+        c.strokeStyle = an ? "rgba(38,110,52,0.8)" : "rgba(90,95,104,0.55)";
+        c.lineWidth = an ? 2 : 1; c.stroke();
+        c.font = "600 " + (eng ? "8px " : "9px ") + "-apple-system,sans-serif";
+        c.fillStyle = an ? "#2a6e34" : "#5a5e66"; c.textAlign = "center";
+        if(zeilen.length === 2){
+          c.fillText(zeilen[0], cxB, cyB - 2);
+          c.fillText(zeilen[1], cxB, cyB + 9);
+        } else {
+          c.fillText(zeilen[0], cxB, cyB + 4);
+        }
       }
     }
     // Symbolfenster
     {
-      const cx2 = 16 + r0 + 5*ab0;
+      const cx2 = 16 + r0 + 4*ab0;
       c.beginPath(); c.arc(cx2, y0, r0, 0, 6.3);
       c.fillStyle = "rgba(255,255,255,0.72)"; c.fill();
       c.strokeStyle = "rgba(90,95,104,0.55)"; c.lineWidth = 1; c.stroke();
@@ -2071,7 +2076,6 @@ function zeige(){
       skm = Math.max(0, Math.min((M.npro-1)*M.dspro, p[0]));
     }
   }
-  document.getElementById("folge").className = folgt ? "aktiv" : "";
   document.getElementById("uhr").textContent = M.zeiten[k];
   document.getElementById("poskm").textContent = skm.toFixed(0);
   document.getElementById("tit2").textContent = tf("bogenKm") + skm.toFixed(0);
@@ -2162,24 +2166,6 @@ const WENDEN = new Set();
   const rz = document.getElementById("zeit");
   rz.max = M.zeiten.length - 1;
   rz.oninput = e => { k = +e.target.value; FRAC = 0; zeige(); };
-  // Griff auf der Karte ziehen
-  function setzeAusX(cx){
-    const r = kc.getBoundingClientRect(), f = kc.width / r.width;
-    const X = (cx - r.left) * f;
-    const ML = 40, MR = 6, px = (kc._w - ML - MR) / M.ns;
-    const km = (X - ML) / px;
-    skm = Math.max(0, Math.min((M.npro-1)*M.dspro, km));
-  }
-  kc.addEventListener("pointerdown", e => {
-    zieht = true; folgt = false; kc.setPointerCapture(e.pointerId);
-    setzeAusX(e.clientX); zeige(); e.preventDefault();
-  });
-  kc.addEventListener("pointermove", e => {
-    if(!zieht) return; setzeAusX(e.clientX); zeige();
-  });
-  kc.addEventListener("pointerup", e => { zieht = false; });
-  kc.addEventListener("pointercancel", () => { zieht = false; });
-  document.getElementById("folge").onclick = () => { folgt = true; zeige(); };
   let rsz = null;
   const neuMessen = () => {
     clearTimeout(rsz);
@@ -2219,12 +2205,7 @@ const WENDEN = new Set();
   document.getElementById("fern").onchange = e => { FERN = +e.target.value; zeige(); };
   document.getElementById("schritt").onchange = e => { SCHRITT = +e.target.value; zeige(); };
   document.getElementById("wege").onchange = e => { wege = e.target.checked; zeige(); };
-  document.getElementById("gruenAn").onchange = e => { GRUEN_AN = e.target.checked; zeige(); };
-  document.getElementById("rotAn").onchange = e => { ROT_AN = e.target.checked; zeige(); };
   document.getElementById("schw").onchange = e => { SCHW = +e.target.value; zeige(); };
-  document.getElementById("hotk").onchange = e => { HOT_AN = e.target.checked; zeige(); };
-  document.getElementById("seedbg").onchange = e => { SEED_AN = e.target.checked; zeige(); };
-  document.getElementById("blauk").onchange = e => { BLAU_AN = e.target.checked; zeige(); };
   document.getElementById("warnw").onchange = e => { WARN_KM = +e.target.value; zeige(); };
   {
     const ll = document.getElementById("luftliste");
@@ -2239,17 +2220,31 @@ const WENDEN = new Set();
     }
   }
   document.getElementById("sicht").addEventListener("click", ev => {
-    if(!window._tonKreis) return;
+    if(!window._knoepfe) return;
     const kc2 = document.getElementById("sicht");
     const r2 = kc2.getBoundingClientRect();
     const sx = (ev.clientX - r2.left) * ((kc2._w || kc2.width) / r2.width);
     const sy = (ev.clientY - r2.top) * ((kc2._h || kc2.height) / r2.height);
-    const [cx6, cy6, rr6] = window._tonKreis;
-    if(Math.hypot(sx - cx6, sy - cy6) <= rr6 + 5){
-      TON_AN = !TON_AN;
-      if(TON_AN) tonAn();
-      else if(tonG) tonG.gain.setTargetAtTime(0, AC.currentTime, 0.02);
+    for(const [bx2, by2, rr2, kid] of window._knoepfe){
+      if(Math.hypot(sx - bx2, sy - by2) > rr2 + 5) continue;
+      if(kid === "ton"){
+        TON_AN = !TON_AN;
+        if(TON_AN) tonAn();
+        else if(tonG) tonG.gain.setTargetAtTime(0, AC.currentTime, 0.02);
+      } else if(kid === "faerb"){
+        const an = GRUEN_AN || ROT_AN;
+        GRUEN_AN = ROT_AN = !an;
+      } else if(kid === "trig"){
+        BLAU_AN = !BLAU_AN;
+      } else if(kid === "therm"){
+        HOT_AN = !HOT_AN;
+      } else if(kid === "roe"){
+        if(roentgenT){ clearInterval(roentgenT); roentgenT = null; rTiefe = 0; }
+        else roentgenT = setInterval(() => {
+          rTiefe = (rTiefe + 1) % (FERN + 1); malSicht(); }, 240);
+      }
       zeige();
+      break;
     }
   });
   document.getElementById("sprk").onclick = () => {
@@ -2258,6 +2253,7 @@ const WENDEN = new Set();
     sprAnwenden(); zeige();
   };
   sprAnwenden();
+  if(M.basisDyn){ M.basisRoh = M.basis; M.basis = M.basisDyn; }
   document.getElementById("basisdynk").onchange = e => {
     if(!M.basisRoh) M.basisRoh = M.basis;
     M.basis = (e.target.checked && M.basisDyn) ? M.basisDyn : M.basisRoh;
@@ -2272,13 +2268,6 @@ const WENDEN = new Set();
   document.addEventListener("keydown", e => {
     if(e.key === "Escape" && voll) document.getElementById("vollk").onclick();
   });
-  document.getElementById("roentgen").onchange = e => {
-    if(roentgenT){ clearInterval(roentgenT); roentgenT = null; }
-    rTiefe = 0;
-    if(e.target.checked)
-      roentgenT = setInterval(() => { rTiefe = (rTiefe + 1) % (FERN + 1); malSicht(); }, 240);
-    zeige();
-  };
   document.getElementById("glatt").onchange = e => { glatt = e.target.checked; zeige(); };
   document.getElementById("best").onchange = e => { bestaendig = e.target.checked; zeige(); };
   document.getElementById("sonne").onchange = e => {
@@ -2286,7 +2275,6 @@ const WENDEN = new Set();
     document.getElementById("sonnenleg").style.display = sonnenmodus ? "" : "none";
     zeige();
   };
-  document.getElementById("folge").onchange = zeige;
   document.getElementById("play").onclick = function(){
     if(spiel){ cancelAnimationFrame(spiel); spiel = null; this.textContent = "▶"; return; }
     this.textContent = "❚❚";

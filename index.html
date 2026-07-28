@@ -55,8 +55,9 @@
  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 <main>
+<button id="sprk" style="float:right;margin:6px 0 0;padding:4px 12px;font-size:13px;
+ border:1px solid #c9c3b6;border-radius:7px;background:#fff;cursor:pointer">EN</button>
 <h1>Jura-Player</h1>
-<p class="lead"><em>Achtung, Suchtpotential 🙂</em></p>
 
 <div class="liste">
 <a class="flug" href="igc-2sSUYy.html">
@@ -115,6 +116,14 @@
   </svg>
   <span class="dauer">9.2 h · Bogen-km 47 bis 165</span>
 </a>
+<a class="flug" href="2026-03-12-XCT-MER-01.html">
+  <span class="zeile"><span class="name">Markus Erb</span><span class="wann">12. Maerz 2026</span></span>
+  <svg class="bogen" viewBox="0 0 168 9" preserveAspectRatio="none" aria-hidden="true">
+    <line x1="0" y1="4.5" x2="168" y2="4.5" stroke="#d8d2c6" stroke-width="1.2"/>
+    <line x1="94.0" y1="4.5" x2="164.0" y2="4.5" stroke="#7f93bd" stroke-width="5" stroke-linecap="round"/>
+  </svg>
+  <span class="dauer">5.9 h · Bogen-km 94 bis 164</span>
+</a>
 <a class="flug" href="2026-04-18-XTR-ACCDB03D9403-01.html">
   <span class="zeile"><span class="name">Kürtu</span><span class="wann">18. April 2026</span></span>
   <svg class="bogen" viewBox="0 0 168 9" preserveAspectRatio="none" aria-hidden="true">
@@ -155,24 +164,52 @@
   </svg>
   <span class="dauer">7.5 h · Bogen-km 57 bis 165</span>
 </a>
+<a class="flug" href="2026-07-24-XCT-JKO-10.html">
+  <span class="zeile"><span class="name">Jörg Korner</span><span class="wann">24. Juli 2026</span></span>
+  <svg class="bogen" viewBox="0 0 168 9" preserveAspectRatio="none" aria-hidden="true">
+    <line x1="0" y1="4.5" x2="168" y2="4.5" stroke="#d8d2c6" stroke-width="1.2"/>
+    <line x1="107.0" y1="4.5" x2="159.0" y2="4.5" stroke="#7f93bd" stroke-width="5" stroke-linecap="round"/>
+  </svg>
+  <span class="dauer">2.0 h · Bogen-km 107 bis 159</span>
+</a>
 </div>
 
-<p class="schluessel">Der Balken zeigt, welchen Abschnitt des Bogens der Flug
+<p class="schluessel" id="schl">Der Balken zeigt, welchen Abschnitt des Bogens der Flug
 ber&uuml;hrt hat &mdash; links S&uuml;dwest (La&nbsp;D&ocirc;le), rechts Nordost
 (Weissenstein).</p>
 
-<details>
-<summary>Integration von f&uuml;nf Quellen</summary>
-<div>
-<p><b>Satellitendaten</b> &mdash; sichtbarer Kanal f&uuml;r die Wolken, Infrarot
-f&uuml;r ihre Oberkanten, Parallaxe korrigiert.</p>
-<p><b>Wettermodell</b> &mdash; Wind auf vier Niveaus, Temperaturprofil &uuml;ber
-neun Druckfl&auml;chen, daraus Wolkenbasis, Grenzschicht und Steigrate.</p>
-<p><b>Flugspur</b> aus dem IGC, in B&auml;rte und Gleitphasen zerlegt.</p>
-<p><b>H&ouml;henmodell</b> mit Neigung und Exposition.</p>
-<p><b>Sonnenstand</b> f&uuml;r die Einstrahlung samt Wolkenschatten.</p>
-</div>
-</details>
-
-<footer>J&ouml;rg Korner</footer>
+<footer id="foot">Datenintegration: J&ouml;rg Korner</footer>
+<script>
+(function(){
+  var TT = {
+    de: {schl:"Der Balken zeigt, welchen Abschnitt des Bogens der Flug ber\u00fchrt hat \u2014 links S\u00fcdwest (La\u00a0D\u00f4le), rechts Nordost (Weissenstein).",
+         foot:"Datenintegration: J\u00f6rg Korner", knopf:"EN"},
+    en: {schl:"The bar shows which part of the arc the flight touched \u2014 southwest (La\u00a0D\u00f4le) on the left, northeast (Weissenstein) on the right.",
+         foot:"Data integration: J\u00f6rg Korner", knopf:"DE"}
+  };
+  var MON = {Januar:"January",Februar:"February",M\u00e4rz:"March",April:"April",
+    Mai:"May",Juni:"June",Juli:"July",August:"August",September:"September",
+    Oktober:"October",November:"November",Dezember:"December"};
+  function anwenden(spr){
+    document.getElementById("schl").textContent = TT[spr].schl;
+    document.getElementById("foot").textContent = TT[spr].foot;
+    document.getElementById("sprk").textContent = TT[spr].knopf;
+    var ws = document.querySelectorAll(".wann");
+    for(var i = 0; i < ws.length; i++){
+      var w = ws[i];
+      if(!w.dataset.de) w.dataset.de = w.textContent;
+      if(spr === "de"){ w.textContent = w.dataset.de; continue; }
+      w.textContent = w.dataset.de.replace(/(\d+)\.\s+(\S+)/,
+        function(_, t, m){ return t + " " + (MON[m] || m); });
+    }
+  }
+  var spr = localStorage.getItem("jura_spr") || "de";
+  document.getElementById("sprk").onclick = function(){
+    spr = spr === "de" ? "en" : "de";
+    localStorage.setItem("jura_spr", spr);
+    anwenden(spr);
+  };
+  anwenden(spr);
+})();
+</script>
 </main>
